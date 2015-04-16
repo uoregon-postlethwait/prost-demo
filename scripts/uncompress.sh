@@ -6,3 +6,6 @@ cd BBMap
 tar xzf BioMart_Dre79_otherRNA.tar.gz
 tar xzf hairpin_miRBase21.tar.gz
 tar xzf mature_miRBase21.tar.gz
+
+cd ../samples
+gunzip *
