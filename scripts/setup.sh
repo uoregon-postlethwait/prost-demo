@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # This script sets up prost-demo for running.  It:
 #   * Checks for presence of BBMap.
@@ -16,10 +16,50 @@ if [ ! `which bbmap.sh` ] ; then
     exit
 fi
 
-# Uncompress annotation files
-cd ../fa
-gunzip *
+# This script needs to be run 
+if [ ! -d fa ] || [ ! -d samples ] ; then i
+    echo Error: Please run this script from the top directory.
+    echo In other words, run this script like so:
+    echo
+    echo "    bash scripts/setup.sh"
+    echo
+    exit
+fi
 
-# Uncompress samples files
-cd ../samples
-gunzip *
+# Uncompress annotation and samples files
+if [[ `ls fa/*.gz 2>/dev/null` ]] ; then gunzip fa/*.gz ; fi
+if [[ `ls samples/*.gz 2>/dev/null` ]] ; then gunzip samples/*.gz ; fi
+
+# Get the ZF assembly.
+if [ -e Danio_rerio.GRCz10.dna.toplevel.fa.gz ] ; then
+    # Already downloaded: noop.
+    :
+elif [ `which wget` ] ; then 
+    echo "Downloading Danio_rerio.GRCz10.dna.toplevel.fa.gz.  This may take a few minutes..."
+    wget ftp://ftp.ensembl.org/pub/current_fasta/danio_rerio/dna/Danio_rerio.GRCz10.dna.toplevel.fa.gz 2> /dev/null
+elif [ `which curl` ] ; then 
+    echo "Downloading Danio_rerio.GRCz10.dna.toplevel.fa.gz.  This may take a few minutes..."
+    curl -O ftp://ftp.ensembl.org/pub/current_fasta/danio_rerio/dna/Danio_rerio.GRCz10.dna.toplevel.fa.gz 2> /dev/null
+else 
+    echo "Error: Your system does not have 'wget' or 'curl' installed, so I cannot"
+    echo "       download Danio_rerio.GRCz10.dna.toplevel.fa.gz for you. Please retrieve"
+    echo "       the file //ftp.ensembl.org/pub/current_fasta/danio_rerio/dna/Danio_rerio.GRCz10.dna.toplevel.fa.gz"
+    echo "       and place it in the current directory, then try again."
+    echo Exiting.
+    exit
+fi
+
+# Build the BBMap DB.
+echo "Building BBMap database of Danio_rerio.GRCz10.dna.toplevel.fa.gz.  This may take a few minutes..."
+echo "    If you wish to run Prost! on a species besides zebrafish, you'll need to be able to "
+echo "    build your own BBMap databases. For your reference, here's how I'm building "
+echo "    the zebrafish BBMap database:"
+echo 
+echo "    bbmap.sh k=7 path=BBMap/Danio_rerio.GRCz10.dna.toplevel ref=Danio_rerio.GRCz10.dna.toplevel.fa.gz"
+echo
+echo "Please be patient while I build the zebrafish BBMap database in your current directory..."
+rm -rf BBMap
+mkdir BBMap
+bbmap.sh k=7 path=BBMap/Danio_rerio.GRCz10.dna.toplevel ref=Danio_rerio.GRCz10.dna.toplevel.fa.gz 2> BBMap/bbmap_build.log
+
+echo Done.
