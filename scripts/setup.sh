@@ -7,7 +7,7 @@
 set -e
 
 # Is BBMap in PATH?
-if [ ! `which bbmap.sh` ] ; then 
+if [ ! `which bbmap.sh 2>/dev/null` ] ; then 
     echo Error: Cannot find bbmap.sh in your \$PATH.
     echo Please add the directory containing your download of BBMap to your \$PATH, like so:
     echo
