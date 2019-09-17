@@ -38,11 +38,11 @@ if [ -e Danio_rerio.GRCz10.dna.toplevel.fa.gz ] ; then
 elif [ `which wget` ] ; then
     echo "Downloading Danio_rerio.GRCz10.dna.toplevel.fa.gz.  This may take a few minutes..."
     wget $ASSEMBLY 2> /dev/null || \
-        echo "Error, couldn't download $ASSEMBLY (using wget)." && exit 1
+        (echo "Error, couldn't download $ASSEMBLY (using wget)." && exit 1)
 elif [ `which curl` ] ; then
     echo "Downloading Danio_rerio.GRCz10.dna.toplevel.fa.gz.  This may take a few minutes..."
     curl -O $ASSEMBLY 2> /dev/null || \
-        echo "Error, couldn't download $ASSEMBLY (using curl)." && exit 1
+        (echo "Error, couldn't download $ASSEMBLY (using curl)." && exit 1)
 else
     echo "Error: Your system does not have 'wget' or 'curl' installed, so I cannot"
     echo "       download Danio_rerio.GRCz10.dna.toplevel.fa.gz for you. Please retrieve"
